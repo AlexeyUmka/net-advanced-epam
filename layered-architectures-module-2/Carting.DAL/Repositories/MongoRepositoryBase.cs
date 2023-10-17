@@ -1,4 +1,5 @@
-﻿using Carting.DAL.Models;
+﻿using System.Linq.Expressions;
+using Carting.DAL.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -24,6 +25,11 @@ public class MongoRepositoryBase<T> : IMongoRepository<T> where T:EntityBase
         return _itemCollection.ReplaceOneAsync(entity => entity.Id == obj.Id, obj);
     }
     
+    public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+    {
+        return (await _itemCollection.FindAsync(predicate)).ToList();
+    }
+
     public virtual Task GetByIdAsync(string id)
     {
         return _itemCollection.FindAsync(entity => entity.Id == id);
@@ -32,6 +38,11 @@ public class MongoRepositoryBase<T> : IMongoRepository<T> where T:EntityBase
     public virtual Task<IEnumerable<T>> GetAllAsync()
     {
         return _itemCollection.FindAsync<T>(new BsonDocument()).Result.ToListAsync().ContinueWith(task => (IEnumerable<T>)task.Result);
+    }
+
+    public virtual Task DeleteAsync(Expression<Func<T,bool>> predicate)
+    {
+        return _itemCollection.DeleteOneAsync(predicate);
     }
 
     protected virtual string GetCollectionName() => nameof(T);
