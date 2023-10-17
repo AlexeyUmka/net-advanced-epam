@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carting.WebApi", "Carting.WebApi\Carting.WebApi.csproj", "{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Carting", "Carting", "{D6182616-7952-4FBE-9204-6E8A5463309F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carting.DAL", "Carting.DAL\Carting.DAL.csproj", "{9DB7C128-DABA-4F0D-B83B-A215F985B58C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carting.BLL", "Carting.BLL\Carting.BLL.csproj", "{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carting.BLL.UnitTests", "Carting.BLL.UnitTests\Carting.BLL.UnitTests.csproj", "{06919E03-F191-4A82-AB4D-21D547BC1D48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DB7C128-DABA-4F0D-B83B-A215F985B58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DB7C128-DABA-4F0D-B83B-A215F985B58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DB7C128-DABA-4F0D-B83B-A215F985B58C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DB7C128-DABA-4F0D-B83B-A215F985B58C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06919E03-F191-4A82-AB4D-21D547BC1D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06919E03-F191-4A82-AB4D-21D547BC1D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06919E03-F191-4A82-AB4D-21D547BC1D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06919E03-F191-4A82-AB4D-21D547BC1D48}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A} = {D6182616-7952-4FBE-9204-6E8A5463309F}
+		{9DB7C128-DABA-4F0D-B83B-A215F985B58C} = {D6182616-7952-4FBE-9204-6E8A5463309F}
+		{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4} = {D6182616-7952-4FBE-9204-6E8A5463309F}
+		{06919E03-F191-4A82-AB4D-21D547BC1D48} = {D6182616-7952-4FBE-9204-6E8A5463309F}
+	EndGlobalSection
+EndGlobal
