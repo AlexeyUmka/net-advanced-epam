@@ -4,6 +4,8 @@ using Carting.DAL.Repositories.Interfaces;
 using FluentValidation;
 using Moq;
 
+namespace Carting.UnitTests;
+
 public class CartServiceTests
 {
     [Fact]
