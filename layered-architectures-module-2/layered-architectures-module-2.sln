@@ -9,6 +9,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carting.BLL", "Carting.BLL\Carting.BLL.csproj", "{032625FA-C1FD-4D0E-9D0B-2B7C6EE369A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carting.BLL.UnitTests", "Carting.BLL.UnitTests\Carting.BLL.UnitTests.csproj", "{06919E03-F191-4A82-AB4D-21D547BC1D48}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{179F8E92-E32B-4B76-9477-6B8DF4362C0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Application", "Catalog.Application\Catalog.Application.csproj", "{61B0821C-6D73-47FF-BCDA-8461594DA6B7}"
@@ -18,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Infrastructure", "Catalog.Infrastructure\Catalog.Infrastructure.csproj", "{7F349F16-A844-4388-81B7-E4C049053311}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.WebUI", "Catalog.WebUI\Catalog.WebUI.csproj", "{6366D25C-B20E-42C6-A5EA-DBEC5CBDC5AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Application.UnitTests", "Catalog.Application.UnitTests\Catalog.Application.UnitTests.csproj", "{ACF36752-7B8E-44A2-BE26-71FE8546EED2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +60,10 @@ Global
 		{6366D25C-B20E-42C6-A5EA-DBEC5CBDC5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6366D25C-B20E-42C6-A5EA-DBEC5CBDC5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6366D25C-B20E-42C6-A5EA-DBEC5CBDC5AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A} = {D6182616-7952-4FBE-9204-6E8A5463309F}
@@ -67,5 +74,6 @@ Global
 		{35083872-2C20-4F61-A75D-13A1DD6060B6} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
 		{7F349F16-A844-4388-81B7-E4C049053311} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
 		{6366D25C-B20E-42C6-A5EA-DBEC5CBDC5AF} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
+		{ACF36752-7B8E-44A2-BE26-71FE8546EED2} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
 	EndGlobalSection
 EndGlobal
