@@ -1,41 +1,35 @@
 ﻿using AutoMapper;
+using Catalog.Application.Categories.Queries.GetCategories;
 using Catalog.Application.Common.Interfaces;
-using Catalog.Application.Common.Mappings;
 using Catalog.Domain.Entities;
 using MediatR;
 
 namespace Catalog.Application.Categories.Commands.UpdateCategory;
 
-public class UpdateCategoryCommand : IRequest, IMapFrom<Category>
+public class UpdateCategoryCommand : IRequest
 {
-    public int Id { get; set; }
+    public CategoryDto CategoryToUpdate { get; set; }
     
-    public string Name { get; set; }
-    
-    public string ImageUrl { get; set; }
-    
-    public int? ParentCategoryId { get; set; }
-}
-
-public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public UpdateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand>
     {
-        _context = context;
-        _mapper = mapper;
-    }
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-    public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
-    {
-        var category = _mapper.Map<Category>(request);
+        public UpdateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
 
-        _context.Categories.Update(category);
+        public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        {
+            var category = _mapper.Map<Category>(request.CategoryToUpdate);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            _context.Categories.Update(category);
 
-        return Unit.Value;
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Unit.Value;
+        }
     }
 }

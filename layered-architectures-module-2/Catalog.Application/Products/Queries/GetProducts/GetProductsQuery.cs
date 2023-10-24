@@ -10,41 +10,41 @@ namespace Catalog.Application.Products.Queries.GetProducts;
 public class GetProductsQuery : IRequest<ProductsVm>
 {
     public int? Id;
-}
-
-public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ProductsVm>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public GetProductsQueryHandler(IApplicationDbContext context, IMapper mapper)
+    
+    public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ProductsVm>
     {
-        _context = context;
-        _mapper = mapper;
-    }
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-    public async Task<ProductsVm> Handle(GetProductsQuery request, CancellationToken cancellationToken)
-    {
-        if (request.Id is null)
+        public GetProductsQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            return new ProductsVm()
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<ProductsVm> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+        {
+            if (request.Id is null)
             {
-                Products = await _context.Products.AsNoTracking().ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken)
-            };
-        }
+                return new ProductsVm()
+                {
+                    Products = await _context.Products.AsNoTracking().ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+                        .ToListAsync(cancellationToken)
+                };
+            }
         
-        var product = await _context.Products
-            .AsNoTracking()
-            .SingleOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+            var product = await _context.Products
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
-        if (product is null)
-        {
-            throw new NotFoundException();
-        }
+            if (product is null)
+            {
+                throw new NotFoundException();
+            }
 
-        var productDto = _mapper.Map<ProductDto>(product);
+            var productDto = _mapper.Map<ProductDto>(product);
         
-        return new ProductsVm() { Products = new [] { productDto } };
+            return new ProductsVm() { Products = new [] { productDto } };
+        }
     }
 }

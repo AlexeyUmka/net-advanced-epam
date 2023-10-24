@@ -11,14 +11,14 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     {
         _context = context;
 
-        RuleFor(p => p.Name)
+        RuleFor(p => p.ProductToCreate.Name)
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
 
-        RuleFor(p => p.CategoryId).NotEqual(0);
+        RuleFor(p => _context.Categories.Find(p.ProductToCreate.CategoryId)).NotNull();
 
-        RuleFor(p => p.Price).NotEqual(0);
+        RuleFor(p => p.ProductToCreate.Price).GreaterThan(0);
         
-        RuleFor(p => p.Amount).NotEqual((uint)0);
+        RuleFor(p => p.ProductToCreate.Amount).GreaterThan((uint)0);
     }
 }

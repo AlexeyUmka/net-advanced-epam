@@ -538,11 +538,11 @@ export interface ICategoriesVm {
 }
 
 export class CategoryDto implements ICategoryDto {
-    id?: number;
-    name?: string;
-    imageUrl?: string;
+    id?: number | undefined;
+    name?: string | undefined;
+    imageUrl?: string | undefined;
     parentCategoryId?: number | undefined;
-    parentCategory?: CategoryDto;
+    parentCategory?: CategoryDto | undefined;
 
     constructor(data?: ICategoryDto) {
         if (data) {
@@ -582,17 +582,15 @@ export class CategoryDto implements ICategoryDto {
 }
 
 export interface ICategoryDto {
-    id?: number;
-    name?: string;
-    imageUrl?: string;
+    id?: number | undefined;
+    name?: string | undefined;
+    imageUrl?: string | undefined;
     parentCategoryId?: number | undefined;
-    parentCategory?: CategoryDto;
+    parentCategory?: CategoryDto | undefined;
 }
 
 export class CreateCategoryCommand implements ICreateCategoryCommand {
-    name?: string;
-    imageUrl?: string;
-    parentCategoryId?: number | undefined;
+    categoryToCreate?: CategoryDto;
 
     constructor(data?: ICreateCategoryCommand) {
         if (data) {
@@ -605,9 +603,7 @@ export class CreateCategoryCommand implements ICreateCategoryCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.imageUrl = _data["imageUrl"];
-            this.parentCategoryId = _data["parentCategoryId"];
+            this.categoryToCreate = _data["categoryToCreate"] ? CategoryDto.fromJS(_data["categoryToCreate"]) : <any>undefined;
         }
     }
 
@@ -620,24 +616,17 @@ export class CreateCategoryCommand implements ICreateCategoryCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["imageUrl"] = this.imageUrl;
-        data["parentCategoryId"] = this.parentCategoryId;
+        data["categoryToCreate"] = this.categoryToCreate ? this.categoryToCreate.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface ICreateCategoryCommand {
-    name?: string;
-    imageUrl?: string;
-    parentCategoryId?: number | undefined;
+    categoryToCreate?: CategoryDto;
 }
 
 export class UpdateCategoryCommand implements IUpdateCategoryCommand {
-    id?: number;
-    name?: string;
-    imageUrl?: string;
-    parentCategoryId?: number | undefined;
+    categoryToUpdate?: CategoryDto;
 
     constructor(data?: IUpdateCategoryCommand) {
         if (data) {
@@ -650,10 +639,7 @@ export class UpdateCategoryCommand implements IUpdateCategoryCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.imageUrl = _data["imageUrl"];
-            this.parentCategoryId = _data["parentCategoryId"];
+            this.categoryToUpdate = _data["categoryToUpdate"] ? CategoryDto.fromJS(_data["categoryToUpdate"]) : <any>undefined;
         }
     }
 
@@ -666,19 +652,13 @@ export class UpdateCategoryCommand implements IUpdateCategoryCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["imageUrl"] = this.imageUrl;
-        data["parentCategoryId"] = this.parentCategoryId;
+        data["categoryToUpdate"] = this.categoryToUpdate ? this.categoryToUpdate.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IUpdateCategoryCommand {
-    id?: number;
-    name?: string;
-    imageUrl?: string;
-    parentCategoryId?: number | undefined;
+    categoryToUpdate?: CategoryDto;
 }
 
 export class ProductsVm implements IProductsVm {
@@ -726,14 +706,14 @@ export interface IProductsVm {
 }
 
 export class ProductDto implements IProductDto {
-    id?: number;
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    categoryId?: number;
-    category?: CategoryDto;
-    price?: number;
-    amount?: number;
+    id?: number | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    imageUrl?: string | undefined;
+    categoryId?: number | undefined;
+    category?: CategoryDto | undefined;
+    price?: number | undefined;
+    amount?: number | undefined;
 
     constructor(data?: IProductDto) {
         if (data) {
@@ -779,23 +759,18 @@ export class ProductDto implements IProductDto {
 }
 
 export interface IProductDto {
-    id?: number;
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    categoryId?: number;
-    category?: CategoryDto;
-    price?: number;
-    amount?: number;
+    id?: number | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    imageUrl?: string | undefined;
+    categoryId?: number | undefined;
+    category?: CategoryDto | undefined;
+    price?: number | undefined;
+    amount?: number | undefined;
 }
 
 export class CreateProductCommand implements ICreateProductCommand {
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    categoryId?: number;
-    price?: number;
-    amount?: number;
+    productToCreate?: ProductDto;
 
     constructor(data?: ICreateProductCommand) {
         if (data) {
@@ -808,12 +783,7 @@ export class CreateProductCommand implements ICreateProductCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.imageUrl = _data["imageUrl"];
-            this.categoryId = _data["categoryId"];
-            this.price = _data["price"];
-            this.amount = _data["amount"];
+            this.productToCreate = _data["productToCreate"] ? ProductDto.fromJS(_data["productToCreate"]) : <any>undefined;
         }
     }
 
@@ -826,33 +796,17 @@ export class CreateProductCommand implements ICreateProductCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["imageUrl"] = this.imageUrl;
-        data["categoryId"] = this.categoryId;
-        data["price"] = this.price;
-        data["amount"] = this.amount;
+        data["productToCreate"] = this.productToCreate ? this.productToCreate.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface ICreateProductCommand {
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    categoryId?: number;
-    price?: number;
-    amount?: number;
+    productToCreate?: ProductDto;
 }
 
 export class UpdateProductCommand implements IUpdateProductCommand {
-    id?: number;
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    categoryId?: number;
-    price?: number;
-    amount?: number;
+    productToUpdate?: ProductDto;
 
     constructor(data?: IUpdateProductCommand) {
         if (data) {
@@ -865,13 +819,7 @@ export class UpdateProductCommand implements IUpdateProductCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.imageUrl = _data["imageUrl"];
-            this.categoryId = _data["categoryId"];
-            this.price = _data["price"];
-            this.amount = _data["amount"];
+            this.productToUpdate = _data["productToUpdate"] ? ProductDto.fromJS(_data["productToUpdate"]) : <any>undefined;
         }
     }
 
@@ -884,25 +832,13 @@ export class UpdateProductCommand implements IUpdateProductCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["imageUrl"] = this.imageUrl;
-        data["categoryId"] = this.categoryId;
-        data["price"] = this.price;
-        data["amount"] = this.amount;
+        data["productToUpdate"] = this.productToUpdate ? this.productToUpdate.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IUpdateProductCommand {
-    id?: number;
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    categoryId?: number;
-    price?: number;
-    amount?: number;
+    productToUpdate?: ProductDto;
 }
 
 export interface FileResponse {

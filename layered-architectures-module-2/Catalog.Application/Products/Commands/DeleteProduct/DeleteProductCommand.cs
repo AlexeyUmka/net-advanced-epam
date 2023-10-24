@@ -2,39 +2,36 @@
 using Catalog.Application.Common.Interfaces;
 using Catalog.Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Application.Products.Commands.DeleteProduct;
 
 public class DeleteProductCommand : IRequest
 {
     public int Id { get; set; }
-}
-
-public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand>
-{
-    private readonly IApplicationDbContext _context;
-
-    public DeleteProductCommandHandler(IApplicationDbContext context)
+    
+    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand>
     {
-        _context = context;
-    }
+        private readonly IApplicationDbContext _context;
 
-    public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
-    {
-        var entity = await _context.Products
-            .Where(l => l.Id == request.Id)
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (entity == null)
+        public DeleteProductCommandHandler(IApplicationDbContext context)
         {
-            throw new NotFoundException(nameof(Product), request.Id);
+            _context = context;
         }
 
-        _context.Products.Remove(entity);
+        public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+        {
+            var entity = await _context.Products.FindAsync(request.Id);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Product), request.Id);
+            }
 
-        return Unit.Value;
+            _context.Products.Remove(entity);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Unit.Value;
+        }
     }
 }

@@ -24,7 +24,7 @@ public class CategoriesController : ApiControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, UpdateCategoryCommand command)
     {
-        if (id != command.Id)
+        if (id != command.CategoryToUpdate.Id)
         {
             return BadRequest();
         }

@@ -1,39 +1,35 @@
 ﻿using AutoMapper;
+using Catalog.Application.Categories.Queries.GetCategories;
 using Catalog.Application.Common.Interfaces;
-using Catalog.Application.Common.Mappings;
 using Catalog.Domain.Entities;
 using MediatR;
 
 namespace Catalog.Application.Categories.Commands.CreateCategory;
 
-public class CreateCategoryCommand : IRequest<int>, IMapFrom<Category>
+public class CreateCategoryCommand : IRequest<int>
 {
-    public string Name { get; set; }
+    public CategoryDto CategoryToCreate { get; set; }
     
-    public string ImageUrl { get; set; }
-    
-    public int? ParentCategoryId { get; set; }
-}
-
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, int>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public CreateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, int>
     {
-        _context = context;
-        _mapper = mapper;
-    }
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-    public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
-    {
-        var entity = _mapper.Map<Category>(request);
+        public CreateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
 
-        _context.Categories.Add(entity);
+        public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        {
+            var entity = _mapper.Map<Category>(request.CategoryToCreate);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            _context.Categories.Add(entity);
 
-        return entity.Id;
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return entity.Id;
+        }
     }
 }

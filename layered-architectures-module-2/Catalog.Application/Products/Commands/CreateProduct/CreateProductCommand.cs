@@ -1,40 +1,35 @@
 ﻿using AutoMapper;
 using Catalog.Application.Common.Interfaces;
-using Catalog.Application.Common.Mappings;
+using Catalog.Application.Products.Queries.GetProducts;
 using Catalog.Domain.Entities;
 using MediatR;
 
 namespace Catalog.Application.Products.Commands.CreateProduct;
 
-public class CreateProductCommand : IRequest<int>, IMapFrom<Product>
+public class CreateProductCommand : IRequest<int>
 {
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string ImageUrl { get; set; }
-    public int CategoryId { get; set; }
-    public decimal Price { get; set; }
-    public uint Amount { get; set; }
-}
+    public ProductDto ProductToCreate { get; set; }
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateProductCommand, int>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public CreateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateProductCommand, int>
     {
-        _context = context;
-        _mapper = mapper;
-    }
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-    public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
-    {
-        var entity = _mapper.Map<Product>(request);
+        public CreateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
 
-        _context.Products.Add(entity);
+        public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        {
+            var entity = _mapper.Map<Product>(request.ProductToCreate);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            _context.Products.Add(entity);
 
-        return entity.Id;
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return entity.Id;
+        }
     }
 }
