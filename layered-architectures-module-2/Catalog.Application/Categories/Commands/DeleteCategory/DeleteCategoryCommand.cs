@@ -1,7 +1,7 @@
 ﻿using Catalog.Application.Common.Exceptions;
 using Catalog.Application.Common.Interfaces;
-using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Application.Categories.Commands.DeleteCategory;
 
@@ -20,18 +20,32 @@ public class DeleteCategoryCommand : IRequest
 
         public async Task<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Categories.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Product), request.Id);
-            }
-
-            _context.Categories.Remove(entity);
+            await DeleteCategory(request.Id);
 
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+
+        private async Task DeleteCategory(int categoryId)
+        {
+            var category = await _context.Categories.Include(c => c.ChildCategories).FirstOrDefaultAsync(c => c.Id == categoryId);
+            if (category == null)
+            {
+                throw new NotFoundException(nameof(category), categoryId);
+            }
+            else if (category.ChildCategories?.Any() ?? false)
+            {
+                foreach (var childCategory in category.ChildCategories)
+                {
+                    await DeleteCategory(childCategory.Id);
+                    _context.Categories.Remove(category);
+                }
+            }
+            else
+            {
+                _context.Categories.Remove(category);
+            }
         }
     }
 }

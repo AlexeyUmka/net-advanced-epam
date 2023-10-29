@@ -1,4 +1,5 @@
-﻿using Catalog.Application.Products.Commands.CreateProduct;
+﻿using Catalog.Application.Common.Models;
+using Catalog.Application.Products.Commands.CreateProduct;
 using Catalog.Application.Products.Commands.DeleteProduct;
 using Catalog.Application.Products.Commands.UpdateProduct;
 using Catalog.Application.Products.Queries.GetProducts;
@@ -12,6 +13,13 @@ public class ProductsController : ApiControllerBase
     public async Task<ActionResult<ProductsVm>> GetProducts(int? id = null)
     {
         var query = new GetProductsQuery() { Id = id };
+        return await Mediator.Send(query);
+    }
+    
+    [HttpGet("paginated")]
+    public async Task<ActionResult<PaginatedList<ProductDto>>> GetProductsByCategoryIdPaginated([FromQuery]int categoryId, [FromQuery]int pageNumber, [FromQuery]int pageSize)
+    {
+        var query = new GetProductsByCategoryIdQuery() { CategoryId = categoryId, PageNumber = pageNumber, PageSize = pageSize};
         return await Mediator.Send(query);
     }
 

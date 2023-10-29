@@ -8,8 +8,13 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)
     {
-        builder.Property(t => t.Name)
+        builder.Property(c => c.Name)
             .HasMaxLength(50)
             .IsRequired();
+
+        builder
+            .HasOne(c => c.ParentCategory)
+            .WithMany(c => c.ChildCategories)
+            .HasForeignKey(c => c.ParentCategoryId);
     }
 }

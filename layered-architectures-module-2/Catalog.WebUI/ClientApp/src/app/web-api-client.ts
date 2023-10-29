@@ -36,7 +36,7 @@ export class CategoriesClient implements ICategoriesClient {
     }
 
     getCategories(id: number | null): Observable<CategoriesVm> {
-        let url_ = this.baseUrl + "/api/Categories/{id}";
+        let url_ = this.baseUrl + "/api/categories/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -87,7 +87,7 @@ export class CategoriesClient implements ICategoriesClient {
     }
 
     update(id: number, command: UpdateCategoryCommand): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Categories/{id}";
+        let url_ = this.baseUrl + "/api/categories/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -146,7 +146,7 @@ export class CategoriesClient implements ICategoriesClient {
     }
 
     delete(id: number): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Categories/{id}";
+        let url_ = this.baseUrl + "/api/categories/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -201,7 +201,7 @@ export class CategoriesClient implements ICategoriesClient {
     }
 
     create(command: CreateCategoryCommand): Observable<number> {
-        let url_ = this.baseUrl + "/api/Categories";
+        let url_ = this.baseUrl + "/api/categories";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -258,6 +258,7 @@ export interface IProductsClient {
     getProducts(id: number | null): Observable<ProductsVm>;
     update(id: number, command: UpdateProductCommand): Observable<FileResponse>;
     delete(id: number): Observable<FileResponse>;
+    getProductsByCategoryIdPaginated(categoryId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfProductDto>;
     create(command: CreateProductCommand): Observable<number>;
 }
 
@@ -275,7 +276,7 @@ export class ProductsClient implements IProductsClient {
     }
 
     getProducts(id: number | null): Observable<ProductsVm> {
-        let url_ = this.baseUrl + "/api/Products/{id}";
+        let url_ = this.baseUrl + "/api/products/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -326,7 +327,7 @@ export class ProductsClient implements IProductsClient {
     }
 
     update(id: number, command: UpdateProductCommand): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Products/{id}";
+        let url_ = this.baseUrl + "/api/products/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -385,7 +386,7 @@ export class ProductsClient implements IProductsClient {
     }
 
     delete(id: number): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Products/{id}";
+        let url_ = this.baseUrl + "/api/products/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -439,8 +440,68 @@ export class ProductsClient implements IProductsClient {
         return _observableOf<FileResponse>(null as any);
     }
 
+    getProductsByCategoryIdPaginated(categoryId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfProductDto> {
+        let url_ = this.baseUrl + "/api/products/paginated?";
+        if (categoryId === null)
+            throw new Error("The parameter 'categoryId' cannot be null.");
+        else if (categoryId !== undefined)
+            url_ += "categoryId=" + encodeURIComponent("" + categoryId) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProductsByCategoryIdPaginated(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProductsByCategoryIdPaginated(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PaginatedListOfProductDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PaginatedListOfProductDto>;
+        }));
+    }
+
+    protected processGetProductsByCategoryIdPaginated(response: HttpResponseBase): Observable<PaginatedListOfProductDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfProductDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PaginatedListOfProductDto>(null as any);
+    }
+
     create(command: CreateProductCommand): Observable<number> {
-        let url_ = this.baseUrl + "/api/Products";
+        let url_ = this.baseUrl + "/api/products";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -714,6 +775,7 @@ export class ProductDto implements IProductDto {
     category?: CategoryDto | undefined;
     price?: number | undefined;
     amount?: number | undefined;
+    hypermediaLinks?: Link[];
 
     constructor(data?: IProductDto) {
         if (data) {
@@ -734,6 +796,11 @@ export class ProductDto implements IProductDto {
             this.category = _data["category"] ? CategoryDto.fromJS(_data["category"]) : <any>undefined;
             this.price = _data["price"];
             this.amount = _data["amount"];
+            if (Array.isArray(_data["hypermediaLinks"])) {
+                this.hypermediaLinks = [] as any;
+                for (let item of _data["hypermediaLinks"])
+                    this.hypermediaLinks!.push(Link.fromJS(item));
+            }
         }
     }
 
@@ -754,6 +821,11 @@ export class ProductDto implements IProductDto {
         data["category"] = this.category ? this.category.toJSON() : <any>undefined;
         data["price"] = this.price;
         data["amount"] = this.amount;
+        if (Array.isArray(this.hypermediaLinks)) {
+            data["hypermediaLinks"] = [];
+            for (let item of this.hypermediaLinks)
+                data["hypermediaLinks"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -767,6 +839,119 @@ export interface IProductDto {
     category?: CategoryDto | undefined;
     price?: number | undefined;
     amount?: number | undefined;
+    hypermediaLinks?: Link[];
+}
+
+export class Link implements ILink {
+    rel?: string;
+    url?: string;
+    httpMethod?: string;
+    body?: any | undefined;
+
+    constructor(data?: ILink) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.rel = _data["rel"];
+            this.url = _data["url"];
+            this.httpMethod = _data["httpMethod"];
+            this.body = _data["body"];
+        }
+    }
+
+    static fromJS(data: any): Link {
+        data = typeof data === 'object' ? data : {};
+        let result = new Link();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["rel"] = this.rel;
+        data["url"] = this.url;
+        data["httpMethod"] = this.httpMethod;
+        data["body"] = this.body;
+        return data;
+    }
+}
+
+export interface ILink {
+    rel?: string;
+    url?: string;
+    httpMethod?: string;
+    body?: any | undefined;
+}
+
+export class PaginatedListOfProductDto implements IPaginatedListOfProductDto {
+    items?: ProductDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfProductDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(ProductDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfProductDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfProductDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfProductDto {
+    items?: ProductDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class CreateProductCommand implements ICreateProductCommand {

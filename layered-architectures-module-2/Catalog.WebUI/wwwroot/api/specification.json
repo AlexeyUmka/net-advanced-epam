@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/Categories/{id}": {
+    "/api/categories/{id}": {
       "get": {
         "tags": [
           "Categories"
@@ -113,7 +113,7 @@
         }
       }
     },
-    "/api/Categories": {
+    "/api/categories": {
       "post": {
         "tags": [
           "Categories"
@@ -146,7 +146,7 @@
         }
       }
     },
-    "/api/Products/{id}": {
+    "/api/products/{id}": {
       "get": {
         "tags": [
           "Products"
@@ -253,7 +253,56 @@
         }
       }
     },
-    "/api/Products": {
+    "/api/products/paginated": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "operationId": "Products_GetProductsByCategoryIdPaginated",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfProductDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products": {
       "post": {
         "tags": [
           "Products"
@@ -405,6 +454,60 @@
           "amount": {
             "type": "integer",
             "nullable": true
+          },
+          "hypermediaLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rel": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "httpMethod": {
+            "type": "string"
+          },
+          "body": {
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedListOfProductDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDto"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
           }
         }
       },
