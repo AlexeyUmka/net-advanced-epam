@@ -441,7 +441,7 @@ export class ProductsClient implements IProductsClient {
     }
 
     getProductsByCategoryIdPaginated(categoryId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfProductDto> {
-        let url_ = this.baseUrl + "/api/products/paginated?";
+        let url_ = this.baseUrl + "/api/products?";
         if (categoryId === null)
             throw new Error("The parameter 'categoryId' cannot be null.");
         else if (categoryId !== undefined)

@@ -253,7 +253,7 @@
         }
       }
     },
-    "/api/products/paginated": {
+    "/api/products": {
       "get": {
         "tags": [
           "Products"
@@ -300,9 +300,7 @@
             }
           }
         }
-      }
-    },
-    "/api/products": {
+      },
       "post": {
         "tags": [
           "Products"

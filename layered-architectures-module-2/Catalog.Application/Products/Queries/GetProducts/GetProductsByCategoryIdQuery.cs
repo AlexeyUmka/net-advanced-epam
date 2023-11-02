@@ -12,7 +12,7 @@ public class GetProductsByCategoryIdQuery : IRequest<PaginatedList<ProductDto>>
     public int? CategoryId;
     public int PageNumber = 1;
     public int PageSize = 1;
-    
+
     public class GetProductsByCategoryIdQueryHandler : IRequestHandler<GetProductsByCategoryIdQuery, PaginatedList<ProductDto>>
     {
         private readonly IApplicationDbContext _context;

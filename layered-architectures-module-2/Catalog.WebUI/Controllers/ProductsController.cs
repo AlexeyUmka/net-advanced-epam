@@ -16,7 +16,7 @@ public class ProductsController : ApiControllerBase
         return await Mediator.Send(query);
     }
     
-    [HttpGet("paginated")]
+    [HttpGet]
     public async Task<ActionResult<PaginatedList<ProductDto>>> GetProductsByCategoryIdPaginated([FromQuery]int categoryId, [FromQuery]int pageNumber, [FromQuery]int pageSize)
     {
         var query = new GetProductsByCategoryIdQuery() { CategoryId = categoryId, PageNumber = pageNumber, PageSize = pageSize};
