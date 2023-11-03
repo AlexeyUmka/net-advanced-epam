@@ -7,6 +7,7 @@ using Carting.BLL.Validators;
 using Carting.DAL.Repositories.Implementations;
 using Carting.DAL.Repositories.Interfaces;
 using Carting.WebApi.Configuration;
+using Carting.WebApi.Filters;
 using FluentValidation;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
@@ -40,7 +41,10 @@ builder.Services.AddScoped<ICartService, CartService>();
 var mongoConfig = configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>();
 builder.Services.AddScoped<IMongoDatabase>(_ => new MongoClient(mongoConfig.ConnectionString).GetDatabase(mongoConfig.DbName));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o =>
@@ -89,8 +93,6 @@ builder.Services.AddApiVersioning(options =>
 }).AddMvc();
 
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -103,8 +105,6 @@ if (app.Environment.IsDevelopment())
         o.SwaggerEndpoint("/swagger/v2/swagger.json", "Carting API v2");
     });
 }
-
-app.UseHttpsRedirection();
 
 app.UseRouting();
 

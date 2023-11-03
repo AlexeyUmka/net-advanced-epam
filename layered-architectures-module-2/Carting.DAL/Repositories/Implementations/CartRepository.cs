@@ -22,14 +22,14 @@ public class CartRepository : MongoRepositoryBase<Cart>, ICartRepository
 
     public async Task AddCartItemAsync(int cartExternalId, CartItem cartItem)
     {
-        var cart = (await _itemCollection.FindAsync(cart => cart.ExternalId == cartExternalId)).SingleOrDefault();
+        var cart = (await _itemCollection.FindAsync(cart => cart.ExternalId == cartExternalId)).Single();
         cart.Items = cart.Items.Append(cartItem);
         await UpdateAsync(cart);
     }
 
     public async Task RemoveCartItemAsync(int cartExternalId, int cartItemExternalId)
     {
-        var cart = (await _itemCollection.FindAsync(cart => cart.ExternalId == cartExternalId)).SingleOrDefault();
+        var cart = (await _itemCollection.FindAsync(cart => cart.ExternalId == cartExternalId)).Single();
         cart.Items = cart.Items.Where(item => item.ExternalId != cartItemExternalId);
         await UpdateAsync(cart);
     }

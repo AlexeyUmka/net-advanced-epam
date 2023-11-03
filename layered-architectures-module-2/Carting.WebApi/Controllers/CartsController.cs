@@ -34,15 +34,17 @@ public class CartsController : ControllerBase
     }
 
     [HttpPost("{cartExternalId:int}/items")]
-    public async Task AddCartItem(int cartExternalId, CartItem cartItem)
+    public async Task<IActionResult> AddCartItem(int cartExternalId, CartItem cartItem)
     {
         var mappedCartItem = _mapper.Map<Carting.BLL.Models.CartItem>(cartItem);
         await _cartService.AddCartItemAsync(cartExternalId, mappedCartItem);
+        return Ok();
     }
     
     [HttpDelete("{cartExternalId:int}/items/{cartItemExternalId:int}")]
-    public async Task RemoveCartItem(int cartExternalId, int cartItemExternalId)
+    public async Task<IActionResult> RemoveCartItem(int cartExternalId, int cartItemExternalId)
     {
         await _cartService.RemoveCartItemAsync(cartExternalId, cartItemExternalId);
+        return Ok();
     }
 }

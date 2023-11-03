@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Carting.BLL.Exceptions;
 using Carting.BLL.Models;
 using Carting.BLL.Services.Interfaces;
 using Carting.DAL.Repositories.Interfaces;
@@ -46,8 +47,12 @@ public class CartService : ICartService
         }
     }
 
-    public Task RemoveCartItemAsync(int cartExternalId, int cartItemExternalId)
+    public async Task RemoveCartItemAsync(int cartExternalId, int cartItemExternalId)
     {
-        return _cartRepository.RemoveCartItemAsync(cartExternalId, cartItemExternalId);
+        if ((await _cartRepository.GetCartByExternalIdAsync(cartExternalId)) == null)
+        {
+            throw new NotFoundException();
+        }
+        await _cartRepository.RemoveCartItemAsync(cartExternalId, cartItemExternalId);
     }
 }

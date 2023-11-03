@@ -32,17 +32,4 @@ public class CartsControllerV2 : ControllerBase
     {
         return _mapper.Map<IEnumerable<CartItem>>((await _cartService.GetCartByExternalIdAsync(cartExternalId)).Items);
     }
-    
-    [HttpPost("{cartExternalId:int}/items")]
-    public async Task AddCartItem(int cartExternalId, CartItem cartItem)
-    {
-        var mappedCartItem = _mapper.Map<Carting.BLL.Models.CartItem>(cartItem);
-        await _cartService.AddCartItemAsync(cartExternalId, mappedCartItem);
-    }
-    
-    [HttpDelete("{cartExternalId:int}/items/{cartItemExternalId:int}")]
-    public async Task RemoveCartItem(int cartExternalId, int cartItemExternalId)
-    {
-        await _cartService.RemoveCartItemAsync(cartExternalId, cartItemExternalId);
-    }
 }
