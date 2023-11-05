@@ -8,7 +8,7 @@ public class CartItemValidator : AbstractValidator<CartItem>
     public CartItemValidator()
     {
         RuleFor(cartItem => cartItem.ExternalId).NotNull();
-        RuleFor(cartItem => cartItem.Name).NotNull();
+        RuleFor(cartItem => cartItem.Name).NotEmpty();
         RuleFor(cartItem => cartItem.Price).NotNull();
     }
 }

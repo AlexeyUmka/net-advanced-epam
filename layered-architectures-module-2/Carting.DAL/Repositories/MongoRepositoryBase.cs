@@ -45,5 +45,5 @@ public class MongoRepositoryBase<T> : IMongoRepository<T> where T:EntityBase
         return _itemCollection.DeleteOneAsync(predicate);
     }
 
-    protected virtual string GetCollectionName() => nameof(T);
+    protected virtual string GetCollectionName() => typeof(T).Name;
 }

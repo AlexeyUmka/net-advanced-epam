@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Catalog.Application.Common.Extensions;
+using Catalog.Application.Common.Interfaces;
+using FluentValidation;
 using MediatR;
 using ValidationException = Catalog.Application.Common.Exceptions.ValidationException;
 
@@ -9,9 +11,10 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators, IApplicationDbContext dbContext)
     {
         _validators = validators;
+        CategoryValidationExtensions.Configure(dbContext);
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)

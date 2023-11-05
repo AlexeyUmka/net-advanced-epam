@@ -1,4 +1,5 @@
-﻿using Catalog.Application.Common.Interfaces;
+﻿using Catalog.Application.Common.Extensions;
+using Catalog.Application.Common.Interfaces;
 using FluentValidation;
 
 namespace Catalog.Application.Products.Commands.CreateProduct;
@@ -15,7 +16,9 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
 
-        RuleFor(p => _context.Categories.Find(p.ProductToCreate.CategoryId)).NotNull();
+        RuleFor(p => p.ProductToCreate.CategoryId)
+            .NotNull()
+            .CategoryExists();
 
         RuleFor(p => p.ProductToCreate.Price).GreaterThan(0);
         

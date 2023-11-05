@@ -1,4 +1,5 @@
-﻿using Catalog.Application.Common.Interfaces;
+﻿using Catalog.Application.Common.Extensions;
+using Catalog.Application.Common.Interfaces;
 using FluentValidation;
 
 namespace Catalog.Application.Products.Commands.UpdateProduct;
@@ -17,7 +18,9 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
 
-        RuleFor(p => _context.Categories.Find(p.ProductToUpdate.CategoryId)).NotNull();
+        RuleFor(p => p.ProductToUpdate.CategoryId)
+            .NotNull()
+            .CategoryExists();
 
         RuleFor(p => p.ProductToUpdate.Price).NotEqual(0);
         
