@@ -25,8 +25,16 @@ public class CartingRabbitMqClient : IRabbitMqClient
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += (sender, args) =>
         {
-            action(JsonSerializer.Deserialize<TMessage>(Encoding.UTF8.GetString(args.Body.ToArray())));
-            _channel.BasicAck(args.DeliveryTag, false);
+            try
+            {
+                action(JsonSerializer.Deserialize<TMessage>(Encoding.UTF8.GetString(args.Body.ToArray())));
+                _channel.BasicAck(args.DeliveryTag, false);
+            }
+            catch (Exception ex)
+            {
+                _channel.BasicReject(args.DeliveryTag, false);
+            }
+            
         };
         _channel.BasicConsume(queueName, autoAck: false, consumer);
     }

@@ -35,6 +35,14 @@ public class CatalogRabbitMqClient : IRabbitMqClient
     private void DeclareCatalogProductUpdateQueue()
     {
         var queueConfig = _rabbitMqConfig.ProductUpdatedQueueConfig;
+        if (queueConfig.HasDLQ)
+        {
+            _channel.QueueDeclare(queue: $"{queueConfig.Name}-DLQ",
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+        }
         _channel.QueueDeclare(queue: queueConfig.Name,
             durable: queueConfig.IsDurable,
             exclusive: queueConfig.IsExclusive,

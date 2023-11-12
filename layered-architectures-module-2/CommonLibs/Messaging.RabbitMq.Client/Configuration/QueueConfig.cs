@@ -7,4 +7,5 @@ public class QueueConfig
     public bool IsExclusive { get; set; }
     public bool IsAutoDelete { get; set; }
     public IDictionary<string, object> Arguments { get; set; }
+    public bool HasDLQ { get; set; }
 }
