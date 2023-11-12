@@ -31,6 +31,12 @@ public class CartService : ICartService
         return _cartRepository.CreateAsync(mapped);
     }
 
+    public Task UpdateCartItemsAsync(CartItem cartItem)
+    {
+        var mapped = _mapper.Map<DAL.Models.CartItem>(cartItem);
+        return _cartRepository.UpdateCartItemsAsync(mapped);
+    }
+
     public async Task AddCartItemAsync(int cartExternalId, CartItem cartItem)
     {
         await _cartItemValidator.ValidateAndThrowAsync(cartItem);

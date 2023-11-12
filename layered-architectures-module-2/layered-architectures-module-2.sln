@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.WebUI", "Catalog.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Application.UnitTests", "Catalog.Application.UnitTests\Catalog.Application.UnitTests.csproj", "{ACF36752-7B8E-44A2-BE26-71FE8546EED2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonLibs", "CommonLibs", "{2792A010-6F81-4DF1-9957-66FACF5007F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.RabbitMq.Client", "CommonLibs\Messaging.RabbitMq.Client\Messaging.RabbitMq.Client.csproj", "{D8C73BFA-C3EE-4070-8A6F-86B7F528AFE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,10 @@ Global
 		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACF36752-7B8E-44A2-BE26-71FE8546EED2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8C73BFA-C3EE-4070-8A6F-86B7F528AFE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8C73BFA-C3EE-4070-8A6F-86B7F528AFE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8C73BFA-C3EE-4070-8A6F-86B7F528AFE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8C73BFA-C3EE-4070-8A6F-86B7F528AFE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{15549EB1-5FD2-47C4-B403-6FE50CAF0B2A} = {D6182616-7952-4FBE-9204-6E8A5463309F}
@@ -75,5 +83,6 @@ Global
 		{7F349F16-A844-4388-81B7-E4C049053311} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
 		{6366D25C-B20E-42C6-A5EA-DBEC5CBDC5AF} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
 		{ACF36752-7B8E-44A2-BE26-71FE8546EED2} = {179F8E92-E32B-4B76-9477-6B8DF4362C0F}
+		{D8C73BFA-C3EE-4070-8A6F-86B7F528AFE2} = {2792A010-6F81-4DF1-9957-66FACF5007F8}
 	EndGlobalSection
 EndGlobal

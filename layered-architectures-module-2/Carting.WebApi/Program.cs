@@ -1,16 +1,21 @@
 using System.Reflection;
 using Asp.Versioning;
 using AutoMapper;
+using Carting.BLL.Clients;
 using Carting.BLL.Services.Implementations;
 using Carting.BLL.Services.Interfaces;
 using Carting.BLL.Validators;
 using Carting.DAL.Repositories.Implementations;
 using Carting.DAL.Repositories.Interfaces;
+using Carting.WebApi.BackgroundServices;
 using Carting.WebApi.Configuration;
 using Carting.WebApi.Filters;
 using FluentValidation;
+using Messaging.RabbitMq.Client;
+using Messaging.RabbitMq.Client.Configuration;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +96,12 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1);
 }).AddMvc();
+
+builder.Services.AddSingleton(builder.Configuration.GetSection(nameof(RabbitMqConfig)).Get<RabbitMqConfig>());
+builder.Services.AddScoped<IConnection>(x => new ConnectionFactory() { HostName = "localhost" }.CreateConnection());
+builder.Services.AddScoped<IRabbitMqClient, CartingRabbitMqClient>();
+
+builder.Services.AddHostedService<MessageProcessingService>();
 
 
 var app = builder.Build();

@@ -1,8 +1,12 @@
 using Catalog.Application;
+using Catalog.Application.Clients;
 using Catalog.Infrastructure;
 using Catalog.Infrastructure.Persistence;
 using Catalog.WebUI.Filters;
 using FluentValidation.AspNetCore;
+using Messaging.RabbitMq.Client;
+using Messaging.RabbitMq.Client.Configuration;
+using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Catalog.WebUI;
@@ -21,6 +25,10 @@ public class Startup
     {
         services.AddApplication();
         services.AddInfrastructure(Configuration);
+        
+        services.AddSingleton(Configuration.GetSection(nameof(RabbitMqConfig)).Get<RabbitMqConfig>());
+        services.AddScoped<IConnection>(x => new ConnectionFactory() { HostName = "localhost" }.CreateConnection());
+        services.AddScoped<IRabbitMqClient, CatalogRabbitMqClient>();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 
