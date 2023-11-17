@@ -33,4 +33,15 @@ public class CartRepository : MongoRepositoryBase<Cart>, ICartRepository
         cart.Items = cart.Items.Where(item => item.ExternalId != cartItemExternalId);
         await UpdateAsync(cart);
     }
+
+    public async Task UpdateCartItemsAsync(CartItem cartItem)
+    {
+        var cartsToUpdate =
+            (await _itemCollection.FindAsync(cart => cart.Items.Any(i => i.ExternalId == cartItem.ExternalId))).ToList();
+        foreach (var cart in cartsToUpdate)
+        {
+            cart.Items = cart.Items.Select(i => i.ExternalId == cartItem.ExternalId ? cartItem : i);
+            await UpdateAsync(cart);
+        }
+    }
 }

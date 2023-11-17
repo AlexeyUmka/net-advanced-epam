@@ -1,7 +1,15 @@
-﻿namespace Catalog.Domain.Entities;
+﻿using Catalog.Domain.Interfaces;
 
-public class Product
+namespace Catalog.Domain.Entities;
+
+public class Product : INotifyWhenUpdated
 {
+    public event EventHandler? Updated = ProductDomainEventsHandlers.ProductUpdatedHandler;
+    public void IAmUpdated()
+    {
+        Updated?.Invoke(this, EventArgs.Empty);
+    }
+
     public int Id { get; set; }
 
     public string Name { get; set; }
