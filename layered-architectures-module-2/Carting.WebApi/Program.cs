@@ -13,6 +13,7 @@ using Carting.WebApi.Filters;
 using FluentValidation;
 using Messaging.RabbitMq.Client;
 using Messaging.RabbitMq.Client.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using RabbitMQ.Client;
@@ -88,6 +89,30 @@ builder.Services.AddSwaggerGen(o =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     o.IncludeXmlComments(xmlPath);
+    // Add JWT Bearer
+    o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    o.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
 });
 
 builder.Services.AddApiVersioning(options =>
@@ -102,6 +127,23 @@ builder.Services.AddScoped<IConnection>(x => new ConnectionFactory() { HostName 
 builder.Services.AddScoped<IRabbitMqClient, CartingRabbitMqClient>();
 
 builder.Services.AddHostedService<MessageProcessingService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://localhost:5001";
+
+        options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+        options.TokenValidationParameters.ValidateAudience = false;
+    })
+    .AddOpenIdConnect("oidc", o =>
+    {
+        o.Authority = "https://localhost:5001";
+        o.ClientId = "postman";
+        o.GetClaimsFromUserInfoEndpoint = true;
+        o.Scope.Add("profile");
+    });
+builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
@@ -118,6 +160,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
