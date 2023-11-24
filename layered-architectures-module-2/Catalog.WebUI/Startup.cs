@@ -6,6 +6,8 @@ using Catalog.WebUI.Filters;
 using FluentValidation.AspNetCore;
 using Messaging.RabbitMq.Client;
 using Messaging.RabbitMq.Client.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -42,8 +44,65 @@ public class Startup
                 .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
         services.AddOpenApiDocument();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(o =>
+        {
+            // Add JWT Bearer
+            o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            o.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
+        });
         services.AddRouting(options => options.LowercaseUrls = true);
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = "https://localhost:5001";
+
+                options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+                options.TokenValidationParameters.ValidateAudience = false;
+            });
+        services.AddAuthorization(o =>
+        {
+            o.AddPolicy(Constants.AuthorizationConstants.Policies.Create, policy =>
+            {
+                policy.RequireRole(Constants.AuthorizationConstants.Roles.Manager);
+                policy.RequireClaim("scope", Constants.AuthorizationConstants.Permissions.Create);
+            });
+            o.AddPolicy(Constants.AuthorizationConstants.Policies.Read, policy =>
+            {
+                policy.RequireRole(Constants.AuthorizationConstants.Roles.Manager, Constants.AuthorizationConstants.Roles.Buyer);
+                policy.RequireClaim("scope", Constants.AuthorizationConstants.Permissions.Read);
+            });
+            o.AddPolicy(Constants.AuthorizationConstants.Policies.Update, policy =>
+            {
+                policy.RequireRole(Constants.AuthorizationConstants.Roles.Manager);
+                policy.RequireClaim("scope", Constants.AuthorizationConstants.Permissions.Update);
+            });
+            o.AddPolicy(Constants.AuthorizationConstants.Policies.Delete, policy =>
+            {
+                policy.RequireRole(Constants.AuthorizationConstants.Roles.Manager);
+                policy.RequireClaim("scope", Constants.AuthorizationConstants.Permissions.Delete);
+            });
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +132,10 @@ public class Startup
         });
 
         app.UseRouting();
+        
+        app.UseAuthentication();
+        app.UseAuthorization();
+        
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(

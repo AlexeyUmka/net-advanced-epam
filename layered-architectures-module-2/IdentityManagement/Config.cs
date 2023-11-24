@@ -7,7 +7,10 @@ namespace IdentityManagement;
 
 public static class Config
 {
-    public const string CartingCatalogSystem = "carting-catalog-system";
+    private const string CreatePermission = "create";
+    private const string ReadPermission = "read";
+    private const string UpdatePermission = "update";
+    private const string DeletePermission = "delete";
     public static IEnumerable<IdentityResource> IdentityResources =>
         new IdentityResource[]
         {
@@ -15,11 +18,20 @@ public static class Config
             new IdentityResources.Profile(),
         };
 
+    private static string[] DefaultUserClaims =
+    {
+        JwtClaimTypes.Role,
+        JwtClaimTypes.Name
+    };
+
     public static IEnumerable<ApiScope> ApiScopes =>
         new ApiScope[]
         {
-            new ApiScope(CartingCatalogSystem),
-            new ApiScope("offline_access")
+            new ApiScope(CreatePermission) {UserClaims = DefaultUserClaims },
+            new ApiScope(ReadPermission) {UserClaims = DefaultUserClaims },
+            new ApiScope(UpdatePermission) {UserClaims = DefaultUserClaims },
+            new ApiScope(DeletePermission) {UserClaims = DefaultUserClaims },
+            new ApiScope(IdentityServerConstants.StandardScopes.OfflineAccess),
         };
 
     public static IEnumerable<Client> Clients =>
@@ -27,42 +39,32 @@ public static class Config
         {
             new Client
             {
-                ClientId = "manager",
-                ClientName = "manager",
+                ClientId = "manager_app",
+                ClientName = "manager_app",
 
                 RefreshTokenUsage = TokenUsage.ReUse,
                 AllowOfflineAccess = true,
-                AllowedGrantTypes = new List<string>() { GrantType.ClientCredentials },
+                AllowAccessTokensViaBrowser = true,
+                AllowedGrantTypes = { GrantType.AuthorizationCode },
                 ClientSecrets = { new Secret("manager".Sha256()) },
-                AllowedScopes = { CartingCatalogSystem, "offline_access",  },
-                
-                Claims = new List<ClientClaim>()
-                {
-                    new (JwtClaimTypes.Role, "manager"),
-                },
-                
-                ClientClaimsPrefix = string.Empty
+                AllowedScopes = { CreatePermission, ReadPermission, UpdatePermission, DeletePermission, IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, IdentityServerConstants.StandardScopes.OfflineAccess },
+                RedirectUris = new[] { "https://oauth.pstmn.io/v1/callback" },
+                RequirePkce = false,
             },
             
             new Client
             {
-                ClientId = "postman",
-                ClientName = "postman",
+                ClientId = "user_app",
+                ClientName = "user_app",
 
                 RefreshTokenUsage = TokenUsage.ReUse,
                 AllowOfflineAccess = true,
-                Enabled = true,
                 AllowAccessTokensViaBrowser = true,
-                AllowedGrantTypes = { GrantType.AuthorizationCode, GrantType.ClientCredentials },
-                ClientSecrets = { new Secret("devsecret".Sha256()) },
-                AllowedScopes = { CartingCatalogSystem, IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile },
+                AllowedGrantTypes = { GrantType.AuthorizationCode },
+                ClientSecrets = { new Secret("user".Sha256()) },
+                AllowedScopes = { ReadPermission, IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, IdentityServerConstants.StandardScopes.OfflineAccess },
                 RedirectUris = new[] { "https://oauth.pstmn.io/v1/callback" },
                 RequirePkce = false,
-
-                Claims = new List<ClientClaim>()
-                {
-                    new (JwtClaimTypes.Role, "postman")
-                },
             },
         };
 }

@@ -13,7 +13,7 @@ namespace Carting.WebApi.Controllers;
 [ApiController]
 [ApiVersion("1")]
 [Route("api/v{version:apiVersion}/carts")]
-[Authorize]
+[Authorize (Roles = "buyer, manager")]
 public class CartsController : ControllerBase
 {
     private readonly ICartService _cartService;
@@ -32,7 +32,6 @@ public class CartsController : ControllerBase
     [HttpGet("{cartExternalId:int}/items")]
     public async Task<Cart> GetCart(int cartExternalId)
     {
-        var user = User;
         return _mapper.Map<Cart>(await _cartService.GetCartByExternalIdAsync(cartExternalId));
     }
 

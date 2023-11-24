@@ -135,13 +135,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
         options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
         options.TokenValidationParameters.ValidateAudience = false;
-    })
-    .AddOpenIdConnect("oidc", o =>
-    {
-        o.Authority = "https://localhost:5001";
-        o.ClientId = "postman";
-        o.GetClaimsFromUserInfoEndpoint = true;
-        o.Scope.Add("profile");
     });
 builder.Services.AddAuthorization();
 
@@ -157,6 +150,7 @@ if (app.Environment.IsDevelopment())
         o.SwaggerEndpoint("/swagger/v1/swagger.json", "Carting API v1");
         o.SwaggerEndpoint("/swagger/v2/swagger.json", "Carting API v2");
     });
+    app.UseMiddleware<JwtLoggingMiddleware>();
 }
 
 app.UseRouting();
