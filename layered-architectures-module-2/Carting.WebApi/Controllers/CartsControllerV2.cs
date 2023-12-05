@@ -2,6 +2,7 @@ using Asp.Versioning;
 using AutoMapper;
 using Carting.BLL.Services.Interfaces;
 using Carting.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Carting.WebApi.Controllers;
@@ -12,6 +13,7 @@ namespace Carting.WebApi.Controllers;
 [ApiController]
 [ApiVersion("2")]
 [Route("api/v{version:apiVersion}/carts")]
+[Authorize]
 public class CartsControllerV2 : ControllerBase
 {
     private readonly ICartService _cartService;

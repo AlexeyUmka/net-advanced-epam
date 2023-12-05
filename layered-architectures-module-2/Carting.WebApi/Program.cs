@@ -13,6 +13,7 @@ using Carting.WebApi.Filters;
 using FluentValidation;
 using Messaging.RabbitMq.Client;
 using Messaging.RabbitMq.Client.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using RabbitMQ.Client;
@@ -88,6 +89,30 @@ builder.Services.AddSwaggerGen(o =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     o.IncludeXmlComments(xmlPath);
+    // Add JWT Bearer
+    o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    o.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
 });
 
 builder.Services.AddApiVersioning(options =>
@@ -103,6 +128,16 @@ builder.Services.AddScoped<IRabbitMqClient, CartingRabbitMqClient>();
 
 builder.Services.AddHostedService<MessageProcessingService>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://localhost:5001";
+
+        options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+        options.TokenValidationParameters.ValidateAudience = false;
+    });
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -115,9 +150,13 @@ if (app.Environment.IsDevelopment())
         o.SwaggerEndpoint("/swagger/v1/swagger.json", "Carting API v1");
         o.SwaggerEndpoint("/swagger/v2/swagger.json", "Carting API v2");
     });
+    app.UseMiddleware<JwtLoggingMiddleware>();
 }
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

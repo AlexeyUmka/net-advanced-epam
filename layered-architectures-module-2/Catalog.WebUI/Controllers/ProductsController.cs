@@ -3,6 +3,7 @@ using Catalog.Application.Products.Commands.CreateProduct;
 using Catalog.Application.Products.Commands.DeleteProduct;
 using Catalog.Application.Products.Commands.UpdateProduct;
 using Catalog.Application.Products.Queries.GetProducts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.WebUI.Controllers;
@@ -10,6 +11,7 @@ namespace Catalog.WebUI.Controllers;
 public class ProductsController : ApiControllerBase
 {
     [HttpGet("{id:int?}")]
+    [Authorize(Policy = Constants.AuthorizationConstants.Policies.Read)]
     public async Task<ActionResult<ProductsVm>> GetProducts(int? id = null)
     {
         var query = new GetProductsQuery() { Id = id };
@@ -17,6 +19,7 @@ public class ProductsController : ApiControllerBase
     }
     
     [HttpGet]
+    [Authorize(Policy = Constants.AuthorizationConstants.Policies.Read)]
     public async Task<ActionResult<PaginatedList<ProductDto>>> GetProductsByCategoryIdPaginated([FromQuery]int categoryId, [FromQuery]int pageNumber, [FromQuery]int pageSize)
     {
         var query = new GetProductsByCategoryIdQuery() { CategoryId = categoryId, PageNumber = pageNumber, PageSize = pageSize};
@@ -24,12 +27,14 @@ public class ProductsController : ApiControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Constants.AuthorizationConstants.Policies.Create)]
     public async Task<ActionResult<int>> Create(CreateProductCommand command)
     {
         return await Mediator.Send(command);
     }
 
     [HttpPut("{id}")]
+    [Authorize(Policy = Constants.AuthorizationConstants.Policies.Update)]
     public async Task<ActionResult> Update(int id, UpdateProductCommand command)
     {
         if (id != command.ProductToUpdate.Id)
@@ -43,6 +48,7 @@ public class ProductsController : ApiControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = Constants.AuthorizationConstants.Policies.Delete)]
     public async Task<ActionResult> Delete(int id)
     {
         await Mediator.Send(new DeleteProductCommand() { Id = id });
