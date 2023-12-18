@@ -7,12 +7,8 @@ namespace Catalog.Application.Products.Commands.CreateProduct;
 
 public class GetProductsByCategoryIdQueryValidator : AbstractValidator<GetProductsByCategoryIdQuery>
 {
-    private readonly IApplicationDbContext _context;
-
     public GetProductsByCategoryIdQueryValidator(IApplicationDbContext context)
     {
-        _context = context;
-
         RuleFor(q => q.PageSize).LessThanOrEqualTo(100);
         
         RuleFor(q => q.CategoryId)
