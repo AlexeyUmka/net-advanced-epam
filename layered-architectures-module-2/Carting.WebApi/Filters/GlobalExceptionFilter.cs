@@ -8,7 +8,7 @@ namespace Carting.WebApi.Filters;
 
 public class GlobalExceptionFilter : IAsyncExceptionFilter
 {
-    public async Task OnExceptionAsync(ExceptionContext context)
+    public Task OnExceptionAsync(ExceptionContext context)
     {
         // Handle the exception here, for example, log it or return a custom error response.
         if (context.Exception is ValidationException validationException)
@@ -36,5 +36,6 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
 
         // Mark the exception as handled.
         context.ExceptionHandled = true;
+        return Task.CompletedTask;
     }
 }

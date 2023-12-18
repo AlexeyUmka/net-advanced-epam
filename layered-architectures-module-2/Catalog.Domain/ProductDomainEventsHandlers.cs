@@ -20,7 +20,7 @@ public static class ProductDomainEventsHandlers
     }
     public static void ProductUpdatedHandler(object sender, EventArgs eventArgs)
     {
-        var product = _mapper.Map<ProductUpdatedMessage>(sender as Product ?? throw new ArgumentException());
+        var product = _mapper.Map<ProductUpdatedMessage>(sender as Product ?? throw new ArgumentException("Sender must not be empty"));
         _rabbitMq.Publish(product, _rabbitMqConfig.ProductUpdatedQueueConfig.Name);
     }
 }

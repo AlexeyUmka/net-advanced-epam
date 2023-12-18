@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Carting.BLL.Exceptions;
 using Carting.BLL.Services.Interfaces;
 using Messaging.RabbitMq.Client;
 using Messaging.RabbitMq.Client.Configuration;
@@ -17,10 +18,10 @@ public class MessageProcessingService : BackgroundService
     public MessageProcessingService(IServiceProvider serviceProvider)
     {
         var scope = serviceProvider.CreateScope();
-        _rabbitMqClient = scope.ServiceProvider.GetService<IRabbitMqClient>();
-        _rabbitMqConfig = scope.ServiceProvider.GetService<RabbitMqConfig>();
-        _cartService = scope.ServiceProvider.GetService<ICartService>();
-        _mapper = scope.ServiceProvider.GetService<IMapper>();
+        _rabbitMqClient = scope.ServiceProvider.GetRequiredService<IRabbitMqClient>();
+        _rabbitMqConfig = scope.ServiceProvider.GetRequiredService<RabbitMqConfig>();
+        _cartService = scope.ServiceProvider.GetRequiredService<ICartService>();
+        _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

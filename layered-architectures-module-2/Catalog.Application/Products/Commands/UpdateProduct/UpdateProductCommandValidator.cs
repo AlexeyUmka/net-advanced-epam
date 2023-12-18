@@ -6,12 +6,8 @@ namespace Catalog.Application.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
 {
-    private readonly IApplicationDbContext _context;
-
     public UpdateProductCommandValidator(IApplicationDbContext context)
     {
-        _context = context;
-
         RuleFor(p => p.ProductToUpdate.Id).NotEqual(0);
         
         RuleFor(p => p.ProductToUpdate.Name)

@@ -34,7 +34,7 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 // services
 builder.Services.AddScoped<ICartService, CartService>();
 // databases
-var mongoConfig = configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>();
+var mongoConfig = configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>() ?? throw new ArgumentException("Mongo Connection string is not specified");;
 builder.Services.AddScoped<IMongoDatabase>(_ => new MongoClient(mongoConfig.ConnectionString).GetDatabase(mongoConfig.DbName));
 
 // Add services to the container.
