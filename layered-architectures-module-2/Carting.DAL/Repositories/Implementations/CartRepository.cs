@@ -10,7 +10,7 @@ public class CartRepository : MongoRepositoryBase<Cart>, ICartRepository
     {
     }
 
-    public virtual async Task<Cart> GetCartByExternalIdAsync(int id)
+    public virtual async Task<Cart?> GetCartByExternalIdAsync(int id)
     {
         return (await FindAsync(cart => cart.ExternalId == id)).SingleOrDefault();
     }

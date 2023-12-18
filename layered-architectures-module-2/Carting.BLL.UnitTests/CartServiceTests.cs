@@ -47,7 +47,7 @@ public class CartServiceTests
         var bllCartItem = new Carting.BLL.Models.CartItem();
 
         cartRepositoryMock.Setup(repo => repo.GetCartByExternalIdAsync(cartExternalId))
-            .ReturnsAsync((Carting.DAL.Models.Cart)null);
+            .ReturnsAsync((Carting.DAL.Models.Cart)null!);
         mapperMock.Setup(mapper => mapper.Map<Carting.DAL.Models.CartItem>(bllCartItem))
             .Returns(new Carting.DAL.Models.CartItem());
 
