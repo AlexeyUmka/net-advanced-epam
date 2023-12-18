@@ -6,12 +6,8 @@ namespace Catalog.Application.Products.Commands.CreateProduct;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateProductCommandValidator(IApplicationDbContext context)
+    public CreateProductCommandValidator()
     {
-        _context = context;
-
         RuleFor(p => p.ProductToCreate.Name)
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(50).WithMessage("Name must not exceed 50 characters.");
