@@ -34,7 +34,7 @@ public class MappingTests
     {
         var instance = GetInstanceOf(source);
 
-        _mapper.Map(instance, source, destination);
+        Assert.NotNull(_mapper.Map(instance, source, destination));
     }
 
     private object GetInstanceOf(Type type)

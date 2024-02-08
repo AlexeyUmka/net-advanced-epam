@@ -2,6 +2,7 @@ using System.Reflection;
 using Asp.Versioning;
 using AutoMapper;
 using Carting.BLL.Clients;
+using Carting.BLL.Exceptions;
 using Carting.BLL.Services.Implementations;
 using Carting.BLL.Services.Interfaces;
 using Carting.BLL.Validators;
@@ -44,7 +45,7 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 // services
 builder.Services.AddScoped<ICartService, CartService>();
 // databases
-var mongoConfig = configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>();
+var mongoConfig = configuration.GetRequiredSection(nameof(MongoDbConfig)).Get<MongoDbConfig>() ?? throw new ArgumentException("Mongo Connection string is not specified");
 builder.Services.AddScoped<IMongoDatabase>(_ => new MongoClient(mongoConfig.ConnectionString).GetDatabase(mongoConfig.DbName));
 
 builder.Services.AddControllers(options =>
@@ -122,7 +123,9 @@ builder.Services.AddApiVersioning(options =>
     options.DefaultApiVersion = new ApiVersion(1);
 }).AddMvc();
 
+#pragma warning disable CS8634
 builder.Services.AddSingleton(builder.Configuration.GetSection(nameof(RabbitMqConfig)).Get<RabbitMqConfig>());
+#pragma warning restore CS8634
 builder.Services.AddScoped<IConnection>(x => new ConnectionFactory() { HostName = "localhost" }.CreateConnection());
 builder.Services.AddScoped<IRabbitMqClient, CartingRabbitMqClient>();
 
